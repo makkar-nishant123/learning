@@ -1,33 +1,59 @@
 package selenium;
 
+import java.util.Date;
+import java.util.logging.Level;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class Intersting {
-	
+	static WebDriver d;
 	public static void main(String[] args) {
-	
-		try {
-			open_browser();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		//open_new_tab();
+		find_java_script_errors();
 		
 	}
+static
+{
+	System.setProperty(
+			"webdriver.chrome.driver",
+			"C:\\Users\\nmakkar\\.jenkins\\workspace\\Coax-mercury\\src\\main\\resources\\Drivers_executable\\chromedriver.exe");
 
-	private static void open_browser() throws InterruptedException {
+	// TODO Auto-generated method stub
+	//d  = new ChromeDriver();
+	
+}
+	private static void find_java_script_errors() {
 		// TODO Auto-generated method stub
-		WebDriver d = new ChromeDriver();
-		d.manage().window().maximize();
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Nishant\\Desktop\\galen-bin-2.3.2\\chromedriver.exe");
-		d.get("https://www.payubiz.in/");
-		d.findElement(By.xpath(".//*[@id='bs-example-navbar-collapse-1']/ul/li[1]/a")).sendKeys(Keys.CONTROL + "t");
-	}
-	
-	
+		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        LoggingPreferences loggingprefs = new LoggingPreferences();
+        loggingprefs.enable(LogType.BROWSER, Level.ALL);
+        capabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);
+        d = new ChromeDriver(capabilities);
+        d.manage().window().maximize();
+        
+		d.get("https://www.hallwaze.com/");
 
+        LogEntries logEntries = d.manage().logs().get(LogType.BROWSER);
+        for (LogEntry entry : logEntries) {
+            System.out.println(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
+        }
+	}
+
+	private static void open_new_tab() {
+		d.get("https://www.hallwaze.com/");
+		d.findElement(
+				By.xpath(".//*[@class='btn btn-success-ghost pull-right signin-btn']"))
+				.sendKeys(Keys.CONTROL, Keys.RETURN);
+
+	}
+ 
 }
